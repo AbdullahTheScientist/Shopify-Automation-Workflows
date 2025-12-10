@@ -50,9 +50,6 @@ Transform your Shopify operations with AI-powered automation. This suite contain
 
 ### Workflow 1: Customer Support Chatbot
 
-<div align="center">
-<img src="https://via.placeholder.com/800x400/7AB55C/FFFFFF?text=Chatbot+Workflow+Architecture" alt="Chatbot Architecture" width="800"/>
-</div>
 
 **Key Components:**
 - **AI Agent**: Google Gemini-powered conversational interface
@@ -65,13 +62,8 @@ Transform your Shopify operations with AI-powered automation. This suite contain
 2. **AI Processing**: Google Gemini analyzes query intent
 3. **API Lookup**: Searches Shopify Orders/Products APIs as needed
 4. **Response Formatting**: Structured reply delivered to customer
-5. **Escalation**: Complex issues routed to fahaad@gmail.com
 
 ### Workflow 2: Invoice Processing Automation
-
-<div align="center">
-<img src="https://via.placeholder.com/800x300/4285F4/FFFFFF?text=Invoice+Processing+Pipeline" alt="Invoice Pipeline" width="800"/>
-</div>
 
 **Processing Steps:**
 1. **Email Scanning**: Monitors labeled supplier emails every minute
