@@ -1,0 +1,229 @@
+{
+  "name": "Shopify Customer Support Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "id": "48a2cc7d-b0da-4ecf-affc-0acda179e3bd",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -240,
+        -80
+      ],
+      "webhookId": "c8ed87ad-8533-4cf7-b653-546846606469"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "You are a helpful customer support assistant for Samaha Store\n\nYour role is to:\n- Answer customer questions about products, orders, shipping, and returns\n- Track order status and provide tracking information using the Shopify Order API Search tool\n- Provide detailed order information including payment status, shipping address, line items, and fulfillment details\n- Provide product details using the Shopify Product Lookup tool\n- Assist with return requests and provide return policy information\n- Be friendly, professional, and empathetic\n\nImportant guidelines:\n- Always verify order numbers before providing sensitive information\n- When customers ask about order status or tracking, use the Shopify Order API Search tool with the order number\n- The order search returns complete information including order ID, tracking numbers, carrier details, and shipment status in the fulfillments array\n- Present order information clearly: order status, payment status, shipping address, items ordered, and tracking details\n- If tracking information is not yet available in the fulfillments, explain that the order is being prepared for shipment\n- If the order search returns no results, politely inform the customer that the order number could not be found and ask them to:\n  1) Double-check the order number\n  2) Check their email confirmation for the correct order number\n  3) Contact support at Faahdghost@gmail.com\n if they need further assistance\n- If you cannot resolve an issue, offer to escalate to fahaad@gmail.com\n- Use the available Shopify tools to fetch real-time data when customers ask about orders, products, or their account\n\nWhen the user asks about an order, ALWAYS:\n1) Ask for the order number if not provided\n2) Call the Shopify Order API Search tool with the order number (with or without the # symbol)\n3) If the search succeeds, extract all order details including tracking information from the fulfillments array\n4) If the search returns no results, inform the customer politely that the order was not found\n5) Present the information in a clear, organized format including:\n   - Order number and status\n   - Payment status\n   - Items ordered with quantities\n   - Shipping address\n   - Tracking number(s) and carrier if available\n   - Estimated delivery if available\n\nProvide clear, concise, and helpful responses."
+        }
+      },
+      "id": "affc606b-909c-4260-bd85-66784102e5ab",
+      "name": "Customer Support Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        112,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "da9e1b92-5b36-4723-93ba-92fbf897de79",
+      "name": "Conversation Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to search for products by name or get product details. Provide a product name or search term, and I will find matching products in the store.",
+        "authentication": "accessToken",
+        "resource": "product",
+        "operation": "getAll",
+        "returnAll": true,
+        "additionalFields": {}
+      },
+      "id": "1f654f55-ce60-4764-a5fa-7cbe4182387a",
+      "name": "Shopify Product Lookup",
+      "type": "n8n-nodes-base.shopifyTool",
+      "typeVersion": 1,
+      "position": [
+        336,
+        128
+      ],
+      "credentials": {
+        "shopifyAccessTokenApi": {
+          "id": "elwOJlcjljbLbMlj",
+          "name": "Shopify Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "reply",
+              "value": "={{ $json.output || $json.text || $json.data?.[0]?.response }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "f6147fc3-89ce-4065-9a8a-b63ed8454668",
+      "name": "Format Reply",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        112
+      ],
+      "id": "89344c0f-c0fb-4620-8512-ad88cc5f3324",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "pdaNyJxQU9Sfw19W",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use this tool to search for orders by order number. Provide the order number (like #1241 or 1241) and this will find the exact matching order with complete details including order ID, status, payment info, shipping address, line items, fulfillment status, and tracking information. Works for any order in the store regardless of total order count.",
+        "url": "=https://nr1jse-uj.myshopify.com/admin/api/2024-07/orders.json?name={{ $fromAI('orderNumber', 'The order number to search for, like #1241 or 1241') }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Shopify-Access-Token",
+              "value": "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"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "e81ef781-a1f6-4ef3-9bb9-9fb714e965ac",
+      "name": "Shopify Order API Search",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        544,
+        112
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "Customer Support Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Customer Support Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shopify Product Lookup": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Support Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Support Agent": {
+      "main": [
+        [
+          {
+            "node": "Format Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Customer Support Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shopify Order API Search": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Support Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "91490c42-786a-4279-a07c-234388ac637a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e001e8735f359237722c4449cf8cf105cadcc894c6205ecd8c981a54d7d96855"
+  },
+  "id": "Atp11OKDRGVyzSed",
+  "tags": []
+}
