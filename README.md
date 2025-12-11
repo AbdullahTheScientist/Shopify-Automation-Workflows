@@ -7,9 +7,26 @@
 ![AI Powered](https://img.shields.io/badge/AI-Gemini-4285F4?style=for-plastic&logo=google&logoColor=white)
 ![Automation](https://img.shields.io/badge/Automation-Level%20Up-FF9900?style=for-plastic)
 
+<a href="https://drive.google.com/file/d/1rPtcuGPJPzWfaWIJUTpvVZsI1JBHeHEi/view?usp=sharing"
+   target="_blank"
+   style="
+      display:inline-block;
+      padding:12px 22px;
+      background:linear-gradient(90deg,#6366f1,#06b6d4);
+      color:white;
+      font-size:16px;
+      font-weight:600;
+      border-radius:10px;
+      text-decoration:none;
+      box-shadow:0 4px 14px rgba(0,0,0,0.18);
+   ">
+  🚀 View Demo
+</a>
+
 **Two powerful n8n workflows that automate customer support and invoice processing for Shopify stores**
 
-[🚀 Overview](#-overview) • [⚡ Workflows](#-workflows) • [ Demo](#https://drive.google.com/file/d/1rPtcuGPJPzWfaWIJUTpvVZsI1JBHeHEi/view?usp=sharing) [📊 Results](#-results) • [🛠️ Setup](#️-setup) • [📈 ROI](#-roi)
+
+[🚀 Overview](#-overview) • [⚡ Workflows](#-workflows) • [📊 Results](#-results) • [🛠️ Setup](#️-setup) • [📈 ROI](#-roi)
 
 </div>
 
